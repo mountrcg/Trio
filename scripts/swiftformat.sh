@@ -112,6 +112,7 @@ trailingClosures \
 --exclude TidepoolService \
 --exclude DanaKit \
 --exclude MedtrumKit \
+--exclude EversenseKit \
 --exclude OmnipodKit \
 --exclude LibreLoop \
 --exclude LibreCRKit \
