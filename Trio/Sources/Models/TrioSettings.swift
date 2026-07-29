@@ -73,7 +73,10 @@ struct TrioSettings: JSON, Equatable, Encodable {
 
     /// Selected Garmin watchface (Trio or SwissAlpine)
     var garminWatchface: GarminWatchface = .trio
-    var garminDatafield: GarminDatafield = .none
+
+    /// Selected Garmin datafields, in selection order. Empty means no datafield is used.
+    /// Replaces the single `garminDatafield` setting; see the decoder for the migration.
+    var garminDatafields: [GarminDatafield] = []
 
     /// Primary attribute choice for Garmin display (COB, ISF, or Sensitivity Ratio)
     var primaryAttributeChoice: GarminPrimaryAttributeChoice = .cob
@@ -89,7 +92,7 @@ struct TrioSettings: JSON, Equatable, Encodable {
         get {
             GarminWatchSettings(
                 watchface: garminWatchface,
-                datafield: garminDatafield,
+                datafields: garminDatafields,
                 primaryAttributeChoice: primaryAttributeChoice,
                 secondaryAttributeChoice: secondaryAttributeChoice,
                 isWatchfaceDataEnabled: isWatchfaceDataEnabled
@@ -97,12 +100,19 @@ struct TrioSettings: JSON, Equatable, Encodable {
         }
         set {
             garminWatchface = newValue.watchface
-            garminDatafield = newValue.datafield
+            garminDatafields = newValue.datafields
             primaryAttributeChoice = newValue.primaryAttributeChoice
             secondaryAttributeChoice = newValue.secondaryAttributeChoice
             isWatchfaceDataEnabled = newValue.isWatchfaceDataEnabled
         }
     }
+}
+
+/// Keys that are no longer stored properties of `TrioSettings`, but still have to be read
+/// from settings files written by older versions.
+private enum LegacyGarminCodingKeys: String, CodingKey {
+    /// Superseded by `garminDatafields`, which holds multiple datafields
+    case garminDatafield
 }
 
 extension TrioSettings: Decodable {
@@ -331,8 +341,13 @@ extension TrioSettings: Decodable {
             settings.garminWatchface = garminWatchface
         }
 
-        if let garminDatafield = try? container.decode(GarminDatafield.self, forKey: .garminDatafield) {
-            settings.garminDatafield = garminDatafield
+        if let garminDatafields = try? container.decode([GarminDatafield].self, forKey: .garminDatafields) {
+            settings.garminDatafields = GarminDatafield.sanitizedSelection(garminDatafields)
+        } else if let legacyContainer = try? decoder.container(keyedBy: LegacyGarminCodingKeys.self),
+                  let garminDatafield = try? legacyContainer.decode(GarminDatafield.self, forKey: .garminDatafield)
+        {
+            // Settings written before multiple datafields were supported stored a single choice
+            settings.garminDatafields = garminDatafield == .none ? [] : [garminDatafield]
         }
 
         if let primaryAttributeChoice = try? container
