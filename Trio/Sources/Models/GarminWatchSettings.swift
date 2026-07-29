@@ -102,15 +102,15 @@ enum GarminDatafield: String, JSON, CaseIterable, Identifiable, Codable, Hashabl
     var datafieldUUID: UUID? {
         switch self {
         case .trio:
-            // return UUID(uuidString: "71cf0982-ca41-42a5-8441-ea81d36056c3")  // local build
-            // return UUID(uuidString: "f07f4ef9-108b-4397-95c9-217b5173412e")  // ConnectIQ test build
+//            return UUID(uuidString: "71cf0982-ca41-42a5-8441-ea81d36056c3")  // local build
+//            return UUID(uuidString: "f07f4ef9-108b-4397-95c9-217b5173412e")  // ConnectIQ test build
             return UUID(uuidString: "3d9b6528-8c84-459a-bbab-989b5f001ebd") // ConnectIQ live build
         case .swissalpine:
-            // return UUID(uuidString: "7A2268F6-3381-4474-81BD-0A3E7F458CB7") // ConnectIQ test build
+//            return UUID(uuidString: "7A2268F6-3381-4474-81BD-0A3E7F458CB7") // ConnectIQ test build
             return UUID(uuidString: "dec5292a-74b0-41bc-8e45-cd93f1d5e137") // ConnectIQ live build
         case .loopgraph:
-            // return UUID(uuidString: "986105b6-5d20-4895-a5c1-b98248ddde4c") // beta build Robert
-            return UUID(uuidString: "2e18aaa2-2b57-47d3-8ace-f9cd27c0d765") // original build (local)
+            return UUID(uuidString: "ecd925f7-147f-4316-8b57-9a1606553d42") // beta build Robert
+//            return UUID(uuidString: "2e18aaa2-2b57-47d3-8ace-f9cd27c0d765") // original build (local so far)
         case .none:
             return nil
         }
