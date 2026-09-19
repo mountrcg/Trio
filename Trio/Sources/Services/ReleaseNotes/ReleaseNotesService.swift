@@ -119,7 +119,7 @@ import Foundation
     // MARK: - Private Methods
 
     private var shouldRefresh: Bool {
-        Date().timeIntervalSince(lastFetched ?? .distantPast) > Self.refreshInterval
+        notes == nil || Date().timeIntervalSince(lastFetched ?? .distantPast) > Self.refreshInterval
     }
 
     /// Best available releases without touching the network.
